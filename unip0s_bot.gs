@@ -27,7 +27,15 @@ function main() {
     return false;
   }
   // auth-tokenを得る
-  const payload_login = {"jsonrpc":"2.0","method":"Unipos.Login","params":{"email_address": USER,"password": PASSWORD},"id":"Unipos.Login"};
+  const payload_login = {
+     "jsonrpc":"2.0"
+    ,"method":"Unipos.Login"
+    ,"params":{
+         "email_address":USER
+        ,"password":PASSWORD
+    }
+    ,"id":"Unipos.Login"
+  };
   const auth_info = post_url_rpc_c(payload_login);
   if (!auth_info) {
     Logger.log('auth fail?');
@@ -42,7 +50,15 @@ function main() {
     Logger.log('no token?');
     return false;
   }
-  const PAYLOAD_GET_PROFILE = {"jsonrpc":"2.0","method":"Unipos.GetProfile","params":[],"id":"Unipos.GetProfile"};
+  const PAYLOAD_GET_PROFILE = {
+     "jsonrpc":"2.0"
+    ,"method":"Unipos.GetProfile"
+    ,"params":[
+        
+    ]
+    ,"id":"Unipos.GetProfile"
+    };
+
   const profile = post_url_rpc_q(authn_token, PAYLOAD_GET_PROFILE);
   if (!profile) {
     Logger.log('no profile?');
@@ -63,7 +79,16 @@ function main() {
     return false;
   }
   // TODO:社員100人超えたら修正（いつ？）
-  const PAYLOAD_FIND_SUGGEST_MEMBERS = {"jsonrpc":"2.0","method":"Unipos.FindSuggestMembers","params":{"term":"","limit":100},"id":"Unipos.FindSuggestMembers"};
+  const PAYLOAD_FIND_SUGGEST_MEMBERS = {
+     "jsonrpc":"2.0"
+    ,"method":"Unipos.FindSuggestMembers"
+    ,"params":{
+         "term":""
+        ,"limit":100
+    }
+    ,"id":"Unipos.FindSuggestMembers"
+    };
+
   const member_list = post_url_rpc_q(authn_token, PAYLOAD_FIND_SUGGEST_MEMBERS);
   if (!member_list) {
     Logger.log('no one survive?');
@@ -88,7 +113,17 @@ function main() {
           giving_point_with_love = LIMIT_GIVE_POINT;
         }
         var quotation = get_quotation();
-        var payload_send_card = {"jsonrpc":"2.0","method":"Unipos.SendCard","params":{"from_member_id":my_id,"to_member_id":to_id,"point":giving_point_with_love,"message":quotation},"id":"Unipos.SendCard"};
+        var payload_send_card = {
+         "jsonrpc":"2.0"
+        ,"method":"Unipos.SendCard"
+        ,"params":{
+             "from_member_id":my_id
+            ,"to_member_id":to_id
+            ,"point":giving_point_with_love
+            ,"message":quotation
+        }
+        ,"id":"Unipos.SendCard"
+        };
         Logger.log(payload_send_card);
         var send_result = post_url_rpc_c_with_token(authn_token, payload_send_card);
         if (!send_result) {
