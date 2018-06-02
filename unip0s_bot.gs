@@ -20,11 +20,11 @@ function main() {
     Logger.log('check script property.');
     return false;
   }
-  const friends_uname_ary = FRIENDS_UNAME_CSV.replace(/\"/g,'').split(',');
+  const friends_uname_ary = Utilities.parseCsv(FRIENDS_UNAME_CSV)[0];
   const friends_count = friends_uname_ary.length;
   if (!friends_count) {
     Logger.log('no friend?');
-    return false;    
+    return false;
   }
   // auth-tokenを得る
   const payload_login = {"jsonrpc":"2.0","method":"Unipos.Login","params":{"email_address": USER,"password": PASSWORD},"id":"Unipos.Login"};
@@ -58,7 +58,6 @@ function main() {
   }
   const my_id = profile.result.member.id;
   var left_point = parseInt(profile.result.member.pocket.available_point, 10);
-  Logger.log("lp=" + left_point);
   if (left_point < 1) {
     Logger.log('no point left/left_point=' + left_point);
     return false;
