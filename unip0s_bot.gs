@@ -33,6 +33,10 @@ function main() {
     Logger.log('auth fail?');
     return false;
   }
+  if (auth_info.error) {
+    Logger.log('[LOGIN] ERROR:' + auth_info.error.message);
+    return false;
+  }  
   const authn_token = auth_info.result.authn_token;
   if (!authn_token) {
     Logger.log('no token?');
@@ -42,6 +46,10 @@ function main() {
   const profile = post_url_rpc_q(authn_token, PAYLOAD_GET_PROFILE);
   if (!profile) {
     Logger.log('no profile?');
+    return false;
+  }  
+  if (profile.error) {
+    Logger.log('[GET_PROFILE] ERROR:' + profile.error.message);
     return false;
   }  
   if (profile.result.team.name != TEAM_NAME) {
@@ -62,6 +70,10 @@ function main() {
     Logger.log('no one survive?');
     return false;
   }
+  if (member_list.error) {
+    Logger.log('[FIND_SUGGEST_MEMBERS] ERROR:' + member_list.error.message);
+    return false;
+  }  
   // ポイント平均化、余剰は最初の友人へ。
   var avg_point = Math.floor(left_point / friends_count);
   var mod_point = left_point - (avg_point * friends_count);
@@ -77,13 +89,17 @@ function main() {
           giving_point_with_love = LIMIT_GIVE_POINT;
         }
         var quotation = get_quotation();
-        var payload_send_card = {"jsonrpc":"2.0","method":"Unipos.SendCard","params":{"from_member_id":my_id,"to_member_id":to_id,"point":giving_point_with_love.toFixed(),"message":quotation},"id":"Unipos.SendCard"};
+        var payload_send_card = {"jsonrpc":"2.0","method":"Unipos.SendCard","params":{"from_member_id":my_id,"to_member_id":to_id,"point":giving_point_with_love,"message":quotation},"id":"Unipos.SendCard"};
         Logger.log(payload_send_card);
         var send_result = post_url_rpc_c_with_token(authn_token, payload_send_card);
         if (!send_result) {
           Logger.log('send card fail.');
           return false;
         }
+        if (send_result.error) {
+          Logger.log('[SEND_CARD] ERROR:' + send_result.error.message);
+          return false;
+        }  
         left_point -= giving_point_with_love;
         break;
       }
